@@ -16,14 +16,14 @@ WPA::WPA(const int wolf_num, const int dim, const double alpha, const double bet
 	flag = false;
 	besiege_flag = false;
 
-	//Ì½ÀÇÊıÁ¿£¬£¨È¡[n£¯(¦Á+1)£¬n£¯¦Á]Ö®¼äµÄÕûÊı£©
+	//æ¢ç‹¼æ•°é‡ï¼Œï¼ˆå–[nï¼(Î±+1)ï¼Œnï¼Î±]ä¹‹é—´çš„æ•´æ•°ï¼‰
 	int MIN_VALUE = wolf_num / (alpha + 1);
 	int MAX_VALUE = wolf_num / alpha;
 	exploring_wolf_num= rand() % (MAX_VALUE - MIN_VALUE + 1) + MIN_VALUE;
-	//ÃÍÀÇÊıÁ¿£¬ÀÇÈºÊıÁ¿(wolf_num)-Ì½ÀÇÊıÁ¿(exploring_wolf_num)-Í·ÀÇÊıÁ¿(1)
+	//çŒ›ç‹¼æ•°é‡ï¼Œç‹¼ç¾¤æ•°é‡(wolf_num)-æ¢ç‹¼æ•°é‡(exploring_wolf_num)-å¤´ç‹¼æ•°é‡(1)
 	fierce_wolf_num = wolf_num - exploring_wolf_num - 1;
 
-	//³õÊ¼»¯ÀÇÈºÊı×é
+	//åˆå§‹åŒ–ç‹¼ç¾¤æ•°ç»„
 	wolfs.resize(wolf_num);
 	MIN_VALUE = 0;
 	MAX_VALUE = 100;
@@ -33,15 +33,15 @@ WPA::WPA(const int wolf_num, const int dim, const double alpha, const double bet
 		wolf.target_x = 500;
 		wolf.target_y = 500;
 	}
-	//Í·ÀÇ³õÊ¼»¯
+	//å¤´ç‹¼åˆå§‹åŒ–
 	update();
 
-	//¶şÎ¬¿Õ¼ä£¬±íÊ¾X£¬Y£¬ËùÒÔ°ÑÊı×é´óĞ¡ÉèÖÃÎª2
+	//äºŒç»´ç©ºé—´ï¼Œè¡¨ç¤ºXï¼ŒYï¼Œæ‰€ä»¥æŠŠæ•°ç»„å¤§å°è®¾ç½®ä¸º2
 	StepA.resize(dim);
 	StepB.resize(dim);
 	StepC.resize(dim);
-	//³õÊ¼»¯¸÷ÖÖĞĞÎªµÄ²½³¤
-	//Î§¹¥²½³¤=1.024£¬ÕÙ»½²½³¤=4.096£¬ÓÎ×ß²½³¤=2.048
+	//åˆå§‹åŒ–å„ç§è¡Œä¸ºçš„æ­¥é•¿
+	//å›´æ”»æ­¥é•¿=1.024ï¼Œå¬å”¤æ­¥é•¿=4.096ï¼Œæ¸¸èµ°æ­¥é•¿=2.048
 	maxd = { 512,512 };
 	mind = { -512,-512 };
 	for (int i = 0; i < dim; ++i) {
@@ -73,11 +73,11 @@ void WPA::update()
 
 void WPA::sort_wolfs_by_fitness()
 {
-	//½á¹¹ÌåÅÅĞò
+	//ç»“æ„ä½“æ’åº
 	auto cmp=[](Wolf w1, Wolf w2)->bool{
 		return w1.calculateFitness() < w2.calculateFitness() ? true : false;
 	};
-	//ÀÇÈºÊı×é×Ô¶¨ÒåÅÅĞò¹æÔò
+	//ç‹¼ç¾¤æ•°ç»„è‡ªå®šä¹‰æ’åºè§„åˆ™
 	sort(wolfs.begin(), wolfs.end(),cmp);
 }
 
@@ -88,7 +88,7 @@ double WPA::cal_distance(double x1,double y1,double x2,double y2)
 
 void WPA::swap_wolf(vector<Wolf>::iterator first,vector<Wolf>::iterator second)
 {
-	//Ç³¿½±´
+	//æµ…æ‹·è´
 	Wolf tmp = *second;
 	*second = *first;
 	*first = tmp;
@@ -100,12 +100,12 @@ void WPA::wandering()
 {
 	for(int epoch=0;epoch< max_wandering_iter;++epoch) {
 		for (int i = 1; i <= exploring_wolf_num; ++i) {
-			if(wolfs[i].calculateFitness()<head_wolf_iter->calculateFitness()) {//ÈôYi´óÓÚÍ·ÀÇËù¸ĞÖªµÄÁÔÎïÆøÎ¶Å¨¶ÈYlead£¬±íÃ÷ÁÔÎïÀëÌ½ÀÇiÒÑÏà¶Ô½Ï½üÇÒ¸ÃÌ½ÀÇ×îÓĞ¿ÉÄÜ²¶»ñÁÔÎï
-				update();//¸üĞÂÀÇÍ·Î»ÖÃ
+			if(wolfs[i].calculateFitness()<head_wolf_iter->calculateFitness()) {//è‹¥Yiå¤§äºå¤´ç‹¼æ‰€æ„ŸçŸ¥çš„çŒç‰©æ°”å‘³æµ“åº¦Yleadï¼Œè¡¨æ˜çŒç‰©ç¦»æ¢ç‹¼iå·²ç›¸å¯¹è¾ƒè¿‘ä¸”è¯¥æ¢ç‹¼æœ€æœ‰å¯èƒ½æ•è·çŒç‰©
+				update();//æ›´æ–°ç‹¼å¤´ä½ç½®
 				flag = true;//Yi>Ylead
 				draw();
 				return;
-			}else {//ÈôYi<Ylead£¬ÔòÌ½ÀÇÏÈ×ÔÖ÷¾ö²ß£¬¼´Ì½ÀÇÏò£è¸ö·½Ïò·Ö±ğÇ°½øÒ»²½
+			}else {//è‹¥Yi<Yleadï¼Œåˆ™æ¢ç‹¼å…ˆè‡ªä¸»å†³ç­–ï¼Œå³æ¢ç‹¼å‘ï½ˆä¸ªæ–¹å‘åˆ†åˆ«å‰è¿›ä¸€æ­¥
 				for(int p=1;p<=h;++p) {
 					Wolf tmp;
 					tmp.x = wolfs[i].x + sin(2 * pi*p / h)*StepA[0];
@@ -114,7 +114,7 @@ void WPA::wandering()
 					tmp.target_y = 500;
 					if(tmp.calculateFitness()<wolfs[i].calculateFitness()) {
 						wolfs[i] = tmp;
-						cout << "ÓÎ×ßĞĞÎª£º" << "µÚ" << i + 1 << "ÀÇ£º" << "x=" << wolfs[i].x << ",y=" << wolfs[i].y << endl;
+						cout << "æ¸¸èµ°è¡Œä¸ºï¼š" << "ç¬¬" << i + 1 << "ç‹¼ï¼š" << "x=" << wolfs[i].x << ",y=" << wolfs[i].y << endl;
 					}
 				}
 				draw();
@@ -127,27 +127,27 @@ void WPA::wandering()
 void WPA::call()
 {
 	while(!besiege_flag) {
-		//ÃÍÀÇ¿¿½üÍ·ÀÇ
+		//çŒ›ç‹¼é è¿‘å¤´ç‹¼
 		for (int i = exploring_wolf_num + 1; i < wolf_num; ++i) {
 			if (wolfs[i].calculateFitness() < head_wolf_iter->calculateFitness()) {
-				//´æÒÉ£ºÔ­À´µÄÃÍÀÇÊÇ·ñÒª¸üĞÂÎªÌ½ÀÇµÄÉí·İ£¨Ô­À´µÄÌ½ÀÇÊÇ·ñ¸üĞÂÎªÃÍÀÇ£©£¿
-				//ÕâÀïÎÒµÄ×ö·¨ÊÇ£ºÖ»ÊÇ½»»»Í·ÀÇºÍÃÍÀÇµÄÉí·İ
-				swap_wolf(head_wolf_iter, head_wolf_iter + i);//½»»»Í·ÀÇºÍÃÍÀÇµÄÉí·İ
+				//å­˜ç–‘ï¼šåŸæ¥çš„çŒ›ç‹¼æ˜¯å¦è¦æ›´æ–°ä¸ºæ¢ç‹¼çš„èº«ä»½ï¼ˆåŸæ¥çš„æ¢ç‹¼æ˜¯å¦æ›´æ–°ä¸ºçŒ›ç‹¼ï¼‰ï¼Ÿ
+				//è¿™é‡Œæˆ‘çš„åšæ³•æ˜¯ï¼šåªæ˜¯äº¤æ¢å¤´ç‹¼å’ŒçŒ›ç‹¼çš„èº«ä»½
+				swap_wolf(head_wolf_iter, head_wolf_iter + i);//äº¤æ¢å¤´ç‹¼å’ŒçŒ›ç‹¼çš„èº«ä»½
 				draw();
-				break;//¼ÌĞøÖ´ĞĞÕÙ»½ĞĞÎª,Yi>Ylead
+				break;//ç»§ç»­æ‰§è¡Œå¬å”¤è¡Œä¸º,Yi>Ylead
 			}
 			else {
-				//ÃÍÀÇ±¼Ï®
+				//çŒ›ç‹¼å¥”è¢­
 				wolfs[i].x = wolfs[i].x + StepB[0] * (head_wolf_iter->x - wolfs[i].x) / abs(head_wolf_iter->x - wolfs[i].x);
 				wolfs[i].y = wolfs[i].y + StepB[1] * (head_wolf_iter->y - wolfs[i].y) / abs(head_wolf_iter->y - wolfs[i].y);
-				cout << "ÕÙ»½ĞĞÎª£º" << "µÚ" << i + 1 << "ÀÇ£º" << "x=" << wolfs[i].x << ",y=" << wolfs[i].y << endl;
+				cout << "å¬å”¤è¡Œä¸ºï¼š" << "ç¬¬" << i + 1 << "ç‹¼ï¼š" << "x=" << wolfs[i].x << ",y=" << wolfs[i].y << endl;
 				draw();
-				//¼ÆËãÅĞ¶¨¾àÀëd_near
+				//è®¡ç®—åˆ¤å®šè·ç¦»d_near
 				double d_near = 0;
 				for (int i = 0; i < dim; ++i) {
 					d_near += (1 / (dim*w))*abs(maxd[i] - mind[i]);
 				}
-				//×ªÈëÎ§¹¥ĞĞÎª
+				//è½¬å…¥å›´æ”»è¡Œä¸º
 				if (cal_distance(head_wolf_iter->x, head_wolf_iter->y, wolfs[i].x, wolfs[i].y) < d_near) {
 					besiege_flag = true;
 					update();
@@ -162,7 +162,7 @@ void WPA::call()
 void WPA::besiege()
 {
 	if (head_wolf_iter->calculateFitness() > 10) {
-		cout << "Î§¹¥ĞĞÎª(Ê§°Ü)" << endl;
+		cout << "å›´æ”»è¡Œä¸º(å¤±è´¥)" << endl;
 		draw();
 		return;
 	}
@@ -172,7 +172,7 @@ void WPA::besiege()
 		int r = rand() % (MAX_VALUE - MIN_VALUE + 1) + MIN_VALUE;
 		wolfs[i].x = wolfs[i].x + r * StepC[0] * abs(wolfs[i].target_x - wolfs[i].x);
 		wolfs[i].y = wolfs[i].y + r * StepC[1] * abs(wolfs[i].target_y - wolfs[i].y);
-		cout << "Î§¹¥ĞĞÎª£º" << "µÚ" << i + 1 << "ÀÇ£º" << "x=" << wolfs[i].x << ",y=" << wolfs[i].y << endl;
+		cout << "å›´æ”»è¡Œä¸ºï¼š" << "ç¬¬" << i + 1 << "ç‹¼ï¼š" << "x=" << wolfs[i].x << ",y=" << wolfs[i].y << endl;
 		draw();
 	}
 }
@@ -189,7 +189,7 @@ void WPA::run()
 				if(head_wolf_iter->calculateFitness()<1.0) {
 					break;
 				}else {
-					//ÖØĞÂÓÎ×ß£¬Òª¶Ô±êÖ¾ÖØÖÃ
+					//é‡æ–°æ¸¸èµ°ï¼Œè¦å¯¹æ ‡å¿—é‡ç½®
 					flag = false;
 					besiege_flag = false;
 				}
@@ -202,17 +202,17 @@ void WPA::run()
 void WPA::draw()
 {
 	Mat img = Mat::zeros(600, 600,CV_8UC3);
-	//ÁÔÎïÎªºìÉ«£¬Í·ÀÇÎªÂÌÉ«£¬Ì½ÀÇÎª°×É«£¬ÃÍÀÇÎªÀ¶É«
+	//çŒç‰©ä¸ºçº¢è‰²ï¼Œå¤´ç‹¼ä¸ºç»¿è‰²ï¼Œæ¢ç‹¼ä¸ºç™½è‰²ï¼ŒçŒ›ç‹¼ä¸ºè“è‰²
 	int radius = 2;
-	circle(img, Point(500, 500), 1, Scalar(0, 0, 255), -1);//»­ÁÔÎï
+	circle(img, Point(500, 500), 1, Scalar(0, 0, 255), -1);//ç”»çŒç‰©
 	for(int i=1;i<=exploring_wolf_num;++i) {
-		circle(img, Point(wolfs[i].x, wolfs[i].y), radius, Scalar(255, 255, 255), 1);//»­Ì½ÀÇ
+		circle(img, Point(wolfs[i].x, wolfs[i].y), radius, Scalar(255, 255, 255), 1);//ç”»æ¢ç‹¼
 	}
-	circle(img, Point(head_wolf_iter->x, head_wolf_iter->y), radius, Scalar(0, 255, 0), -1);//»­Í·ÀÇ
+	circle(img, Point(head_wolf_iter->x, head_wolf_iter->y), radius, Scalar(0, 255, 0), -1);//ç”»å¤´ç‹¼
 	for(int i=exploring_wolf_num+1;i<wolf_num;++i) {
-		circle(img, Point(wolfs[0].x, wolfs[0].y), radius, Scalar(255, 0, 0), 1);//»­ÃÍÀÇ
+		circle(img, Point(wolfs[i].x, wolfs[i].y), radius, Scalar(255, 0, 0), 1);//ç”»çŒ›ç‹¼
 	}
 	imshow("WPA", img);
-	waitKey(0.01 * 1000);//µÈ´ı0.5Ãë
+	waitKey(0.01 * 1000);//ç­‰å¾…0.5ç§’
 }
 
