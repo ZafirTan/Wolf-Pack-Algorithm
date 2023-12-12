@@ -49,8 +49,8 @@ public:
 	}
 
 
-	Point m_Position;//µ±Ç°ÀÇµÄ×ø±êÎ»ÖÃ
-	int m_index;//µ±Ç°ÀÇµÄ±àºÅ
+	Point m_Position;//å½“å‰ç‹¼çš„åæ ‡ä½ç½®
+	int m_index;//å½“å‰ç‹¼çš„ç¼–å·
 	double getX()
 	{
 		return m_Position.m_X;
@@ -99,46 +99,46 @@ public:
 		flag = false;
 		besiege_flag = false;
 
-		//Ì½ÀÇÊıÁ¿£¬£¨È¡[n£¯(¦Á+1)£¬n£¯¦Á]Ö®¼äµÄÕûÊı£©
+		//æ¢ç‹¼æ•°é‡ï¼Œï¼ˆå–[nï¼(Î±+1)ï¼Œnï¼Î±]ä¹‹é—´çš„æ•´æ•°ï¼‰
 		int MIN_VALUE = wolf_num / (alpha + 1);
 		int MAX_VALUE = wolf_num / alpha;
 		m_ExploringWolfNum = rand() % (MAX_VALUE - MIN_VALUE + 1) + MIN_VALUE;
-		//ÃÍÀÇÊıÁ¿£¬ÀÇÈºÊıÁ¿(wolf_num)-Ì½ÀÇÊıÁ¿(exploring_wolf_num)-Í·ÀÇÊıÁ¿(1)
+		//çŒ›ç‹¼æ•°é‡ï¼Œç‹¼ç¾¤æ•°é‡(wolf_num)-æ¢ç‹¼æ•°é‡(exploring_wolf_num)-å¤´ç‹¼æ•°é‡(1)
 		m_FierceWolfNum = wolf_num - m_ExploringWolfNum - 1;
 
-		//³õÊ¼»¯ÀÇÈºÊı×é
-		m_HeadWolfs.resize(1);//Í·ÀÇÊı×é³õÊ¼»¯
-		m_ExploringWolfs.resize(m_ExploringWolfNum);//Ì½ÀÇÊı×é³õÊ¼»¯
-		m_FierceWolfs.resize(m_FierceWolfNum);//ÃÍÀÇÊı×é³õÊ¼»¯
+		//åˆå§‹åŒ–ç‹¼ç¾¤æ•°ç»„
+		m_HeadWolfs.resize(1);//å¤´ç‹¼æ•°ç»„åˆå§‹åŒ–
+		m_ExploringWolfs.resize(m_ExploringWolfNum);//æ¢ç‹¼æ•°ç»„åˆå§‹åŒ–
+		m_FierceWolfs.resize(m_FierceWolfNum);//çŒ›ç‹¼æ•°ç»„åˆå§‹åŒ–
 
-		vector<Wolf> temp(m_WolfNum);//ÁÙÊ±ÀÇÈºÊı×é
+		vector<Wolf> temp(m_WolfNum);//ä¸´æ—¶ç‹¼ç¾¤æ•°ç»„
 		MIN_VALUE = 0;
 		MAX_VALUE = 100;
 		for(int i=0;i<temp.size();++i) {
-			//ÀÇÈºµÄ³õÊ¼Î»ÖÃÔÚx=[0,100],y=[0,100]Ö®¼äµÄËæ»úÊı
+			//ç‹¼ç¾¤çš„åˆå§‹ä½ç½®åœ¨x=[0,100],y=[0,100]ä¹‹é—´çš„éšæœºæ•°
 			temp[i].m_Position.m_X = rand() % (MAX_VALUE - MIN_VALUE + 1) + MIN_VALUE;
 			temp[i].m_Position.m_Y = rand() % (MAX_VALUE - MIN_VALUE + 1) + MIN_VALUE;
 			temp[i].m_index = i + 1;
 		}
-		sortWolfsByFitness(temp);//¸ù¾İÊÊÓ¦¶ÈÅÅĞò
-		for (int i = 0; i < m_headWolfNum; ++i) {//Í·ÀÇ
+		sortWolfsByFitness(temp);//æ ¹æ®é€‚åº”åº¦æ’åº
+		for (int i = 0; i < m_headWolfNum; ++i) {//å¤´ç‹¼
 			m_HeadWolfs[i] = temp[i];
 		}
 		m_HeadWolfIter = m_HeadWolfs.begin();
-		for(int i=0;i<m_ExploringWolfNum;++i) {//ÓÎÀÇ
+		for(int i=0;i<m_ExploringWolfNum;++i) {//æ¸¸ç‹¼
 			m_ExploringWolfs[i] = temp[m_headWolfNum + i];
 		}
-		for(int i=0;i<m_FierceWolfNum;++i) {//ÃÍÀÇ
+		for(int i=0;i<m_FierceWolfNum;++i) {//çŒ›ç‹¼
 			m_FierceWolfs[i] = temp[m_ExploringWolfNum + i];
 		}
 
 
-		//¶şÎ¬¿Õ¼ä£¬±íÊ¾X£¬Y£¬ËùÒÔ°ÑÊı×é´óĞ¡ÉèÖÃÎª2
+		//äºŒç»´ç©ºé—´ï¼Œè¡¨ç¤ºXï¼ŒYï¼Œæ‰€ä»¥æŠŠæ•°ç»„å¤§å°è®¾ç½®ä¸º2
 		StepA.resize(dim);
 		StepB.resize(dim);
 		StepC.resize(dim);
-		//³õÊ¼»¯¸÷ÖÖĞĞÎªµÄ²½³¤
-		//Î§¹¥²½³¤=1.024£¬ÕÙ»½²½³¤=4.096£¬ÓÎ×ß²½³¤=2.048
+		//åˆå§‹åŒ–å„ç§è¡Œä¸ºçš„æ­¥é•¿
+		//å›´æ”»æ­¥é•¿=1.024ï¼Œå¬å”¤æ­¥é•¿=4.096ï¼Œæ¸¸èµ°æ­¥é•¿=2.048
 		maxd = { 512,512 };
 		mind = { -512,-512 };
 		for (int i = 0; i < dim; ++i) {
@@ -154,21 +154,21 @@ public:
 
 
 	/*
-	 * º¯ÊıÃû: calcFitness
-	 * ÃèÊö: ¼ÆËãÊÊÓ¦¶È£¬¼´ËùĞèÒªÇó½âµÄÄ¿±êº¯Êı£¬fitness<=0
-	 * ²ÎÊı:
-	 *   - X1: Ô­µãµÄX×ø±ê
-	 *   - Y1: Ô­µãµÄY×ø±ê
-	 *   - X2: Ä¿±êµãµÄX×ø±ê
-	 *   - Y2: Ä¿±êµãµÄY×ø±ê
-	 * ·µ»ØÖµ: Á½µã¼äµÄ¾àÀë
+	 * å‡½æ•°å: calcFitness
+	 * æè¿°: è®¡ç®—é€‚åº”åº¦ï¼Œå³æ‰€éœ€è¦æ±‚è§£çš„ç›®æ ‡å‡½æ•°ï¼Œfitness<=0
+	 * å‚æ•°:
+	 *   - X1: åŸç‚¹çš„Xåæ ‡
+	 *   - Y1: åŸç‚¹çš„Yåæ ‡
+	 *   - X2: ç›®æ ‡ç‚¹çš„Xåæ ‡
+	 *   - Y2: ç›®æ ‡ç‚¹çš„Yåæ ‡
+	 * è¿”å›å€¼: ä¸¤ç‚¹é—´çš„è·ç¦»
 	 */
 	double calcFitness(const int X1, const int Y1, const int X2, const int Y2)
 	{
 #ifdef TEST1
-		//Á½µã¼ä¾àÀë¹«Ê½
+		//ä¸¤ç‚¹é—´è·ç¦»å…¬å¼
 		double d = sqrt(pow(X1 - X2, 2) + pow(Y1 - Y2, 2));
-		return -d;//¾àÀëÔ½Ğ¡£¬ÊÊÓ¦¶ÈÔ½¸ß
+		return -d;//è·ç¦»è¶Šå°ï¼Œé€‚åº”åº¦è¶Šé«˜
 #endif
 
 #ifdef TEST2
@@ -180,9 +180,9 @@ public:
 	double calcFitness(Point p1,Point p2)
 	{
 #ifdef TEST1
-		//Á½µã¼ä¾àÀë¹«Ê½
+		//ä¸¤ç‚¹é—´è·ç¦»å…¬å¼
 		double d = sqrt(pow(p1.m_X - p2.m_X, 2) + pow(p1.m_Y - p2.m_Y, 2));
-		return -d;//¾àÀëÔ½Ğ¡£¬ÊÊÓ¦¶ÈÔ½¸ß
+		return -d;//è·ç¦»è¶Šå°ï¼Œé€‚åº”åº¦è¶Šé«˜
 #endif
 
 #ifdef TEST2
@@ -193,62 +193,62 @@ public:
 	}
 
 	/*
-	 * º¯ÊıÃû: sortWolfsByFitness
-	 * ÃèÊö: ÊÊÓ¦¶ÈÅÅĞòº¯Êı
-	 * ²ÎÊı:ÎŞ
-	 * ·µ»ØÖµ: ÎŞ
+	 * å‡½æ•°å: sortWolfsByFitness
+	 * æè¿°: é€‚åº”åº¦æ’åºå‡½æ•°
+	 * å‚æ•°:æ— 
+	 * è¿”å›å€¼: æ— 
 	 */
 	void sortWolfsByFitness(vector<Wolf> &wolfs)
 	{
-		//½á¹¹ÌåÅÅĞò
+		//ç»“æ„ä½“æ’åº
 		auto cmp = [&](Wolf &w1, Wolf &w2)->bool {
 			return calcFitness(w1.m_Position,m_TargetPos) > calcFitness(w2.m_Position,m_TargetPos) ? true : false;
 		};
-		//ÀÇÈºÊı×é×Ô¶¨ÒåÅÅĞò¹æÔò
+		//ç‹¼ç¾¤æ•°ç»„è‡ªå®šä¹‰æ’åºè§„åˆ™
 		sort(wolfs.begin(), wolfs.end(), cmp);
 	}
 
 	void update()
 	{
-		//ÖØĞÂÅÅĞòÀÇÈºÊı×é
+		//é‡æ–°æ’åºç‹¼ç¾¤æ•°ç»„
 		vector<Wolf> temp;
-		//ºÏ²¢Êı×é
-		for (int i = 0; i < m_headWolfNum; ++i) {//Í·ÀÇ
+		//åˆå¹¶æ•°ç»„
+		for (int i = 0; i < m_headWolfNum; ++i) {//å¤´ç‹¼
 			temp.push_back(m_HeadWolfs[i]);
 		}
 		m_HeadWolfIter = m_HeadWolfs.begin();
-		for (int i = 0; i < m_ExploringWolfNum; ++i) {//ÓÎÀÇ
+		for (int i = 0; i < m_ExploringWolfNum; ++i) {//æ¸¸ç‹¼
 			temp.push_back(m_ExploringWolfs[i]);
 		}
-		for (int i = 0; i < m_FierceWolfNum; ++i) {//ÃÍÀÇ
+		for (int i = 0; i < m_FierceWolfNum; ++i) {//çŒ›ç‹¼
 			temp.push_back(m_FierceWolfs[i]);
 		}
-		sortWolfsByFitness(temp);//¸ù¾İÊÊÓ¦¶ÈÅÅĞò
-		for (int i = 0; i < m_headWolfNum; ++i) {//Í·ÀÇ
+		sortWolfsByFitness(temp);//æ ¹æ®é€‚åº”åº¦æ’åº
+		for (int i = 0; i < m_headWolfNum; ++i) {//å¤´ç‹¼
 			m_HeadWolfs[i] = temp[i];
 		}
 		m_HeadWolfIter = m_HeadWolfs.begin();
-		for (int i = 0; i < m_ExploringWolfNum; ++i) {//ÓÎÀÇ
+		for (int i = 0; i < m_ExploringWolfNum; ++i) {//æ¸¸ç‹¼
 			m_ExploringWolfs[i] = temp[m_headWolfNum + i];
 		}
-		for (int i = 0; i < m_FierceWolfNum; ++i) {//ÃÍÀÇ
+		for (int i = 0; i < m_FierceWolfNum; ++i) {//çŒ›ç‹¼
 			m_FierceWolfs[i] = temp[m_ExploringWolfNum + i];
 		}
 	}
 
 
 	/*
-	 * º¯ÊıÃû: wolfsWandering
-	 * ÃèÊö: WPAËã·¨ÖĞµÄÓÎ×ßº¯Êı
-	 * ²ÎÊı:ÎŞ
-	 * ·µ»ØÖµ: ÎŞ
+	 * å‡½æ•°å: wolfsWandering
+	 * æè¿°: WPAç®—æ³•ä¸­çš„æ¸¸èµ°å‡½æ•°
+	 * å‚æ•°:æ— 
+	 * è¿”å›å€¼: æ— 
 	 */
 	void wolfsWandering()
 	{
 		for (int epoch = 0; epoch < max_wandering_iter; ++epoch) {
 			for (int i = 0; i < m_ExploringWolfNum; ++i) {
-				if (calcFitness(m_ExploringWolfs[i].m_Position,m_TargetPos) > calcFitness(m_HeadWolfIter->m_Position,m_TargetPos)) {//ÈôYi´óÓÚÍ·ÀÇËù¸ĞÖªµÄÁÔÎïÆøÎ¶Å¨¶ÈYlead£¬±íÃ÷ÁÔÎïÀëÌ½ÀÇiÒÑÏà¶Ô½Ï½üÇÒ¸ÃÌ½ÀÇ×îÓĞ¿ÉÄÜ²¶»ñÁÔÎï
-					//¸üĞÂÀÇÍ·Î»ÖÃ
+				if (calcFitness(m_ExploringWolfs[i].m_Position,m_TargetPos) > calcFitness(m_HeadWolfIter->m_Position,m_TargetPos)) {//è‹¥Yiå¤§äºå¤´ç‹¼æ‰€æ„ŸçŸ¥çš„çŒç‰©æ°”å‘³æµ“åº¦Yleadï¼Œè¡¨æ˜çŒç‰©ç¦»æ¢ç‹¼iå·²ç›¸å¯¹è¾ƒè¿‘ä¸”è¯¥æ¢ç‹¼æœ€æœ‰å¯èƒ½æ•è·çŒç‰©
+					//æ›´æ–°ç‹¼å¤´ä½ç½®
 					Wolf temp = m_ExploringWolfs[i];
 					m_ExploringWolfs[i] = *m_HeadWolfIter;
 					*m_HeadWolfIter = temp;
@@ -258,7 +258,7 @@ public:
 #endif
 					return;
 				}
-				else {//ÈôYi<Ylead£¬ÔòÌ½ÀÇÏÈ×ÔÖ÷¾ö²ß£¬¼´Ì½ÀÇÏò£è¸ö·½Ïò·Ö±ğÇ°½øÒ»²½
+				else {//è‹¥Yi<Yleadï¼Œåˆ™æ¢ç‹¼å…ˆè‡ªä¸»å†³ç­–ï¼Œå³æ¢ç‹¼å‘ï½ˆä¸ªæ–¹å‘åˆ†åˆ«å‰è¿›ä¸€æ­¥
 					double max_x = m_ExploringWolfs[i].m_Position.m_X;
 					double max_y = m_ExploringWolfs[i].m_Position.m_Y;
 					for (int p = 1; p <= m_h; ++p) {
@@ -270,7 +270,7 @@ public:
 						}
 					}
 					m_ExploringWolfs[i].m_Position = Point(max_x, max_y);
-					cout << "ÓÎ×ßĞĞÎª£º" << "±àºÅÎª" << m_ExploringWolfs[i].m_index << "µÄÌ½ÀÇ£º" << "x=" << m_ExploringWolfs[i].getX() << ",y=" << m_ExploringWolfs[i].getY() << endl;
+					cout << "æ¸¸èµ°è¡Œä¸ºï¼š" << "ç¼–å·ä¸º" << m_ExploringWolfs[i].m_index << "çš„æ¢ç‹¼ï¼š" << "x=" << m_ExploringWolfs[i].getX() << ",y=" << m_ExploringWolfs[i].getY() << endl;
 #ifdef TEST1
 					drawWofls();
 #endif
@@ -281,15 +281,15 @@ public:
 	}
 
 	/*
-	 * º¯ÊıÃû: wolfsCall
-	 * ÃèÊö: WPAËã·¨ÖĞµÄÕÙ»½º¯Êı
-	 * ²ÎÊı:ÎŞ
-	 * ·µ»ØÖµ: ÎŞ
+	 * å‡½æ•°å: wolfsCall
+	 * æè¿°: WPAç®—æ³•ä¸­çš„å¬å”¤å‡½æ•°
+	 * å‚æ•°:æ— 
+	 * è¿”å›å€¼: æ— 
 	 */
 	void wolfsCall()
 	{
 
-		//¼ÆËãÅĞ¶¨¾àÀëd_near
+		//è®¡ç®—åˆ¤å®šè·ç¦»d_near
 		double d_near = 0;//d_near=2.048
 		for (int i = 0; i < dim; ++i) {
 			d_near += (1 / (dim*m_w))*abs(maxd[i] - mind[i]);
@@ -297,21 +297,21 @@ public:
 
 		while (!besiege_flag) {
 
-			//ÃÍÀÇ¿¿½üÍ·ÀÇ
+			//çŒ›ç‹¼é è¿‘å¤´ç‹¼
 			for (int i = 0; i < m_FierceWolfNum; ++i) {
 				if (calcFitness(m_FierceWolfs[i].m_Position,m_TargetPos) > calcFitness(m_HeadWolfIter->m_Position,m_TargetPos)) {//Yi>Ylead
-					//½»»»Í·ÀÇºÍÃÍÀÇµÄÉí·İ£¬Yi>Ylead
+					//äº¤æ¢å¤´ç‹¼å’ŒçŒ›ç‹¼çš„èº«ä»½ï¼ŒYi>Ylead
 					Wolf temp = m_FierceWolfs[i];
 					m_FierceWolfs[i] = *m_HeadWolfIter;
 					*m_HeadWolfIter = temp;
 					//drawWofls();
-					break;//¼ÌĞøÖ´ĞĞÕÙ»½ĞĞÎª
+					break;//ç»§ç»­æ‰§è¡Œå¬å”¤è¡Œä¸º
 				}else {//Yi<Ylead
 
-					//ÃÍÀÇ±¼Ï®
+					//çŒ›ç‹¼å¥”è¢­
 					// m_FierceWolfs[i].m_Position.m_X = m_FierceWolfs[i].getX() + StepB[0] * (m_HeadWolfIter->getX() - m_FierceWolfs[i].getX()) / abs(m_HeadWolfIter->getX() - m_FierceWolfs[i].getX());
 					// m_FierceWolfs[i].m_Position.m_Y = m_FierceWolfs[i].getY() + StepB[1] * (m_HeadWolfIter->getY() - m_FierceWolfs[i].getY()) / abs(m_HeadWolfIter->getY() - m_FierceWolfs[i].getY());
-					//ÃÍÀÇ±¼Ï®
+					//çŒ›ç‹¼å¥”è¢­
 					if(m_HeadWolfIter->getX()-m_FierceWolfs[i].getX()>1e-20) {
 						m_FierceWolfs[i].m_Position.m_X = m_FierceWolfs[i].getX() + StepB[0] * (m_HeadWolfIter->getX() - m_FierceWolfs[i].getX()) / abs(m_HeadWolfIter->getX() - m_FierceWolfs[i].getX());
 					}/*else {
@@ -323,15 +323,15 @@ public:
 						m_FierceWolfs[i].m_Position.m_Y = m_FierceWolfs[i].getY() + StepB[1] * 1;
 					}*/
 					
-					cout << "ÕÙ»½ĞĞÎª£º" << "±àºÅÎª" << m_FierceWolfs[i].m_index << "µÄÃÍÀÇ£º" << "x=" << m_FierceWolfs[i].getX() << ",y=" << m_FierceWolfs[i].getY() << endl;
+					cout << "å¬å”¤è¡Œä¸ºï¼š" << "ç¼–å·ä¸º" << m_FierceWolfs[i].m_index << "çš„çŒ›ç‹¼ï¼š" << "x=" << m_FierceWolfs[i].getX() << ",y=" << m_FierceWolfs[i].getY() << endl;
 #ifdef TEST1
 					drawWofls();
 #endif
 
-					//×ªÈëÎ§¹¥ĞĞÎª
+					//è½¬å…¥å›´æ”»è¡Œä¸º
 					if(sqrt(pow(m_HeadWolfIter->m_Position.m_X - m_FierceWolfs[i].m_Position.m_X, 2) + pow(m_HeadWolfIter->m_Position.m_Y - m_FierceWolfs[i].m_Position.m_Y, 2))){
 					// if (abs(calcFitness(m_HeadWolfIter->m_Position, m_FierceWolfs[i].m_Position)) < d_near) {
-						//m_BesiegeWolfs.push_back(m_FierceWolfs[i]);//¼ÓÈëÎ§¹¥¶ÓÁĞ
+						//m_BesiegeWolfs.push_back(m_FierceWolfs[i]);//åŠ å…¥å›´æ”»é˜Ÿåˆ—
 						besiege_flag = true;
 #ifdef TEST1
 						drawWofls();
@@ -341,7 +341,7 @@ public:
 				}
 				
 			
-				//ÃÍÀÇ±¼Ï®
+				//çŒ›ç‹¼å¥”è¢­
 				// if(m_HeadWolfIter->getX()-m_FierceWolfs[i].getX()>1e-20) {
 				// 	m_FierceWolfs[i].m_Position.m_X = m_FierceWolfs[i].getX() + StepB[0] * (m_HeadWolfIter->getX() - m_FierceWolfs[i].getX()) / abs(m_HeadWolfIter->getX() - m_FierceWolfs[i].getX());
 				// }else {
@@ -360,17 +360,17 @@ public:
 	}
 
 	/*
-	 * º¯ÊıÃû: wolfsBesiege
-	 * ÃèÊö: WPAËã·¨ÖĞµÄÎ§¹¥º¯Êı
-	 * ²ÎÊı:ÎŞ
-	 * ·µ»ØÖµ: ÎŞ
+	 * å‡½æ•°å: wolfsBesiege
+	 * æè¿°: WPAç®—æ³•ä¸­çš„å›´æ”»å‡½æ•°
+	 * å‚æ•°:æ— 
+	 * è¿”å›å€¼: æ— 
 	 */
 	void wolfsBesiege()
 	{
-		//Õâ²¿·ÖÔ­±¾Îª¸üĞÂÖÖÈº£¬¡°ÈõÈâÇ¿Ê³¡±¹æÔò£¬ÏÖÔÚ¸Ä³ÉÒ»¸ö¹Ì¶¨Ìõ¼ş£¬²»½øĞĞÖÖÈº¸üĞÂÁË
+		//è¿™éƒ¨åˆ†åŸæœ¬ä¸ºæ›´æ–°ç§ç¾¤ï¼Œâ€œå¼±è‚‰å¼ºé£Ÿâ€è§„åˆ™ï¼Œç°åœ¨æ”¹æˆä¸€ä¸ªå›ºå®šæ¡ä»¶ï¼Œä¸è¿›è¡Œç§ç¾¤æ›´æ–°äº†
 		// if(sqrt(pow(m_HeadWolfIter->m_Position.m_X - m_TargetPos.m_X, 2) + pow(m_HeadWolfIter->m_Position.m_Y - m_TargetPos.m_Y, 2))>10){
 		if (abs(calcFitness(m_HeadWolfIter->m_Position,m_TargetPos)) > 10) {
-			cout << "Î§¹¥ĞĞÎª(Ê§°Ü)" << endl;
+			cout << "å›´æ”»è¡Œä¸º(å¤±è´¥)" << endl;
 #ifdef TEST1
 			drawWofls();
 #endif
@@ -379,23 +379,23 @@ public:
 
 		int MIN_VALUE = -1;
 		int MAX_VALUE = 1;
-		for (int i = 0; i < m_ExploringWolfNum; ++i) {//Ì½ÀÇ
+		for (int i = 0; i < m_ExploringWolfNum; ++i) {//æ¢ç‹¼
 			int r = rand() % (MAX_VALUE - MIN_VALUE + 1) + MIN_VALUE;
 			double tempX = m_ExploringWolfs[i].getX() + r * StepC[0] * abs(m_TargetPos.m_X - m_ExploringWolfs[i].getX());
 			double tempY = m_ExploringWolfs[i].getY() + r * StepC[1] * abs(m_TargetPos.m_Y - m_ExploringWolfs[i].getY());
 			if (calcFitness(Point(tempX, tempY), m_TargetPos) > calcFitness(m_ExploringWolfs[i].m_Position, m_TargetPos)) {
 				m_ExploringWolfs[i].m_Position = Point(tempX, tempY);
 			}
-			cout << "Î§¹¥ĞĞÎª£º" << "±àºÅÎª" << m_ExploringWolfs[i].m_index << "µÄÌ½ÀÇ£º" << "x=" << m_ExploringWolfs[i].getX() << ",y=" << m_ExploringWolfs[i].getY() << endl;
+			cout << "å›´æ”»è¡Œä¸ºï¼š" << "ç¼–å·ä¸º" << m_ExploringWolfs[i].m_index << "çš„æ¢ç‹¼ï¼š" << "x=" << m_ExploringWolfs[i].getX() << ",y=" << m_ExploringWolfs[i].getY() << endl;
 		}
-		for (int i = 0; i < m_FierceWolfNum; ++i) {//ÃÍÀÇ
+		for (int i = 0; i < m_FierceWolfNum; ++i) {//çŒ›ç‹¼
 			int r = rand() % (MAX_VALUE - MIN_VALUE + 1) + MIN_VALUE;
 			double tempX = m_FierceWolfs[i].getX() + r * StepC[0] * abs(m_TargetPos.m_X - m_FierceWolfs[i].getX());
 			double tempY = m_FierceWolfs[i].getY() + r * StepC[1] * abs(m_TargetPos.m_Y - m_FierceWolfs[i].getY());
 			if (calcFitness(Point(tempX, tempY), m_TargetPos) > calcFitness(m_FierceWolfs[i].m_Position, m_TargetPos)) {
 				m_FierceWolfs[i].m_Position = Point(tempX, tempY);
 			}
-			cout << "Î§¹¥ĞĞÎª£º" << "±àºÅÎª" << m_FierceWolfs[i].m_index << "µÄÃÍÀÇ£º" << "x=" << m_FierceWolfs[i].getX() << ",y=" << m_FierceWolfs[i].getY() << endl;
+			cout << "å›´æ”»è¡Œä¸ºï¼š" << "ç¼–å·ä¸º" << m_FierceWolfs[i].m_index << "çš„çŒ›ç‹¼ï¼š" << "x=" << m_FierceWolfs[i].getX() << ",y=" << m_FierceWolfs[i].getY() << endl;
 		}
 #ifdef TEST1
 		drawWofls();
@@ -421,7 +421,7 @@ public:
 						break;
 					}
 					else {
-						//ÖØĞÂÓÎ×ß£¬Òª¶Ô±êÖ¾ÖØÖÃ
+						//é‡æ–°æ¸¸èµ°ï¼Œè¦å¯¹æ ‡å¿—é‡ç½®
 						flag = false;
 						besiege_flag = false;
 						//update();
@@ -432,7 +432,7 @@ public:
 						break;
 					}
 					else {
-						//ÖØĞÂÓÎ×ß£¬Òª¶Ô±êÖ¾ÖØÖÃ
+						//é‡æ–°æ¸¸èµ°ï¼Œè¦å¯¹æ ‡å¿—é‡ç½®
 						flag = false;
 						besiege_flag = false;
 						//update();
@@ -443,13 +443,13 @@ public:
 		}
 		auto end = chrono::steady_clock::now();
 		auto duration = chrono::duration_cast<chrono::seconds>(end - start);
-		cout << "³ÌĞòÔËĞĞÊ±¼äÎª£º" << duration.count() << "Ãë" << endl;
-		cout << "³ÌĞòµü´ú´ÎÊıÎª£º" << i << endl;
+		cout << "ç¨‹åºè¿è¡Œæ—¶é—´ä¸ºï¼š" << duration.count() << "ç§’" << endl;
+		cout << "ç¨‹åºè¿­ä»£æ¬¡æ•°ä¸ºï¼š" << i << endl;
 #ifdef TEST1
-		cout << "×îÓÅ½á¹ûÎª£º" << "x=" << m_HeadWolfIter->getX() << ",y=" << m_HeadWolfIter->getY() << endl;
+		cout << "æœ€ä¼˜ç»“æœä¸ºï¼š" << "x=" << m_HeadWolfIter->getX() << ",y=" << m_HeadWolfIter->getY() << endl;
 #endif
 #ifdef TEST2
-		cout << "×îÓÅ½á¹ûÎª£º" << "x=" << m_HeadWolfIter->getX()  << endl;
+		cout << "æœ€ä¼˜ç»“æœä¸ºï¼š" << "x=" << m_HeadWolfIter->getX() << ",y=" << calcFitness(m_HeadWolfIter->m_Position, m_TargetPos) << endl;
 #endif
 		cv::waitKey(0);
 	}
@@ -457,56 +457,56 @@ public:
 	void drawWofls()
 	{
 		cv::Mat img = cv::Mat::zeros(600, 600, CV_8UC3);
-		//ÁÔÎïÎªºìÉ«£¬Í·ÀÇÎªÂÌÉ«£¬Ì½ÀÇÎª°×É«£¬ÃÍÀÇÎªÀ¶É«
+		//çŒç‰©ä¸ºçº¢è‰²ï¼Œå¤´ç‹¼ä¸ºç»¿è‰²ï¼Œæ¢ç‹¼ä¸ºç™½è‰²ï¼ŒçŒ›ç‹¼ä¸ºè“è‰²
 		int radius = 2;
-		circle(img, cv::Point(m_TargetPos.m_X, m_TargetPos.m_Y), radius, cv::Scalar(0, 0, 255), -1);//»­ÁÔÎï
+		circle(img, cv::Point(m_TargetPos.m_X, m_TargetPos.m_Y), radius, cv::Scalar(0, 0, 255), -1);//ç”»çŒç‰©
 		for (int i = 0; i < m_ExploringWolfs.size(); ++i) {
-			circle(img, cv::Point(m_ExploringWolfs[i].getX(), m_ExploringWolfs[i].getY()), radius, cv::Scalar(255, 255, 255), 1);//»­Ì½ÀÇ
+			circle(img, cv::Point(m_ExploringWolfs[i].getX(), m_ExploringWolfs[i].getY()), radius, cv::Scalar(255, 255, 255), 1);//ç”»æ¢ç‹¼
 		}
 		for(int i=0;i<m_HeadWolfs.size();++i) {
-			circle(img, cv::Point(m_HeadWolfs[i].getX(), m_HeadWolfs[i].getY()), radius, cv::Scalar(0, 255, 0), -1);//»­Í·ÀÇ
+			circle(img, cv::Point(m_HeadWolfs[i].getX(), m_HeadWolfs[i].getY()), radius, cv::Scalar(0, 255, 0), -1);//ç”»å¤´ç‹¼
 		}
 		for (int i = 0 ; i < m_FierceWolfs.size(); ++i) {
-			circle(img, cv::Point(m_FierceWolfs[i].getX(), m_FierceWolfs[i].getY()), radius, cv::Scalar(255, 0, 0), 1);//»­ÃÍÀÇ
+			circle(img, cv::Point(m_FierceWolfs[i].getX(), m_FierceWolfs[i].getY()), radius, cv::Scalar(255, 0, 0), 1);//ç”»çŒ›ç‹¼
 		}
 		cv::imshow("WPA-V1", img);
-		cv::waitKey(0.001 * 1000);//µÈ´ı0.001Ãë
+		cv::waitKey(0.001 * 1000);//ç­‰å¾…0.001ç§’
 	}
 
 	
 
 
 private:
-	int m_h = 10;//h¸ö·½Ïò
-	double m_alpha = 4;//Ì½ÀÇ±ÈÀıÒò×Ó
-	double m_beta = 6;//ÀÇÈº¸üĞÂ±ÈÀıÒò×Ó
-	double m_w = 500;//¾àÀëÅĞ¶ÏÒò×Ó
-	int m_WolfNum = 50;//ÀÇÈºÊıÁ¿
+	int m_h = 10;//hä¸ªæ–¹å‘
+	double m_alpha = 4;//æ¢ç‹¼æ¯”ä¾‹å› å­
+	double m_beta = 6;//ç‹¼ç¾¤æ›´æ–°æ¯”ä¾‹å› å­
+	double m_w = 500;//è·ç¦»åˆ¤æ–­å› å­
+	int m_WolfNum = 50;//ç‹¼ç¾¤æ•°é‡
 	int m_headWolfNum = 1;
-	int m_ExploringWolfNum;//Ì½ÀÇÊıÁ¿£¬£¨È¡[n£¯(¦Á+1)£¬n£¯¦Á]Ö®¼äµÄÕûÊı£©
-	int m_FierceWolfNum;//ÃÍÀÇÊıÁ¿
-	vector<Wolf> m_HeadWolfs;//Í·ÀÇÊı×é
-	vector<Wolf> m_ExploringWolfs;//Ì½ÀÇÊı×é
-	vector<Wolf> m_FierceWolfs;//ÃÍÀÇÊı×é
+	int m_ExploringWolfNum;//æ¢ç‹¼æ•°é‡ï¼Œï¼ˆå–[nï¼(Î±+1)ï¼Œnï¼Î±]ä¹‹é—´çš„æ•´æ•°ï¼‰
+	int m_FierceWolfNum;//çŒ›ç‹¼æ•°é‡
+	vector<Wolf> m_HeadWolfs;//å¤´ç‹¼æ•°ç»„
+	vector<Wolf> m_ExploringWolfs;//æ¢ç‹¼æ•°ç»„
+	vector<Wolf> m_FierceWolfs;//çŒ›ç‹¼æ•°ç»„
 
 	Point m_TargetPos;
 
-	vector<Wolf>::iterator m_HeadWolfIter;//Í·ÀÇÖ¸Õë
-	vector<Wolf> m_BesiegeWolfs;//Î§¹¥¶ÓÁĞ
+	vector<Wolf>::iterator m_HeadWolfIter;//å¤´ç‹¼æŒ‡é’ˆ
+	vector<Wolf> m_BesiegeWolfs;//å›´æ”»é˜Ÿåˆ—
 
-	vector<int> maxd;//Î¬¶È×î´óÖµ
-	vector<int> mind;//Î¬¶È×îĞ¡Öµ
-	vector<double> StepA;//ÓÎ×ß²½³¤
-	vector<double> StepB;//ÕÙ»½²½³¤
-	vector<double> StepC;//Î§¹¥²½³¤
-	double S = 1000;//²½³¤Òò×Ó
-	int dim = 2;//Î¬¶È
+	vector<int> maxd;//ç»´åº¦æœ€å¤§å€¼
+	vector<int> mind;//ç»´åº¦æœ€å°å€¼
+	vector<double> StepA;//æ¸¸èµ°æ­¥é•¿
+	vector<double> StepB;//å¬å”¤æ­¥é•¿
+	vector<double> StepC;//å›´æ”»æ­¥é•¿
+	double S = 1000;//æ­¥é•¿å› å­
+	int dim = 2;//ç»´åº¦
 
-	int max_wandering_iter = 30;//×î´óÓÎ×ß´ÎÊı
-	int max_iter = 1000;//×î´óµü´ú´ÎÊı
+	int max_wandering_iter = 30;//æœ€å¤§æ¸¸èµ°æ¬¡æ•°
+	int max_iter = 1000;//æœ€å¤§è¿­ä»£æ¬¡æ•°
 
-	bool flag = false;//Í·ÀÇ¸üĞÂ±êÖ¾	
-	bool besiege_flag = false;//Î§¹¥ĞĞÎª±êÖ¾
+	bool flag = false;//å¤´ç‹¼æ›´æ–°æ ‡å¿—	
+	bool besiege_flag = false;//å›´æ”»è¡Œä¸ºæ ‡å¿—
 
 };
 
